@@ -1,0 +1,2013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Good Fella — Frontend Development Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/lenis@1/dist/lenis.css">
+    <style>
+        /* ========== VARIABLES ========== */
+        :root {
+            --bg: #141314;
+            --bg-dark: #0a0a0a;
+            --bg-card: #1a1a1a;
+            --bg-light: #f5f5f0;
+            --text-white: #e8e4df;
+            --text-gray: #888880;
+            --text-dark: #555550;
+            --text-light-bg: #1a1a1a;
+            --accent: #ff6633;
+            --accent-hover: #ff7744;
+            --accent-red: #cc3322;
+            --border: #222222;
+            --font-display: 'Outfit', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --container: 1320px;
+            --transition: 0.3s ease;
+        }
+
+        /* ========== RESET ========== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            /* scroll handled by Lenis */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font-mono);
+            background: var(--bg);
+            color: var(--text-white);
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            cursor: none;
+        }
+
+        button {
+            cursor: none;
+            font-family: var(--font-mono);
+            border: none;
+            background: none;
+            color: inherit;
+        }
+
+        img { max-width: 100%; display: block; }
+        ul, ol { list-style: none; }
+
+        ::selection {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        /* ========== CUSTOM CURSOR ========== */
+        .cursor-dot {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
+            transition: width 0.15s, height 0.15s;
+        }
+
+        .cursor-ring {
+            position: fixed;
+            width: 36px;
+            height: 36px;
+            border: 1.5px solid rgba(255, 102, 51, 0.4);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.25s, height 0.25s, opacity 0.25s;
+        }
+
+        body.cursor-hover .cursor-dot {
+            width: 16px;
+            height: 16px;
+        }
+
+        body.cursor-hover .cursor-ring {
+            width: 50px;
+            height: 50px;
+            opacity: 0.2;
+        }
+
+        /* ========== CONTAINER ========== */
+        .container {
+            max-width: var(--container);
+            margin: 0 auto;
+            padding: 0 4rem;
+        }
+
+        .container-fluid {
+            width: 100%;
+            padding: 0 2.8rem;
+            position: relative;
+        }
+
+        /* ========== HEADER ========== */
+        .header {
+            position: fixed;
+            top: 0.8rem;
+            left: 1.2rem;
+            right: 1.2rem;
+            z-index: 3000;
+            padding: 1.1rem 0;
+            border-radius: 0;
+            transition: background 0.4s ease, padding 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease, top 0.4s ease, left 0.4s ease, right 0.4s ease, border-radius 0.4s ease;
+            border: 1px solid transparent;
+        }
+
+        .header.scrolled {
+            background: #1e1e1e;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 0.65rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 6px;
+        }
+
+        .header.scrolled .header-logo {
+            font-size: 1.35rem;
+            transition: font-size 0.4s ease;
+        }
+
+        .header.scrolled .btn-cta {
+            height: 38px;
+            font-size: 0.6rem;
+        }
+
+        .header.scrolled .btn-plus-right,
+        .header.scrolled .btn-plus-left {
+            height: 38px;
+            width: 38px;
+        }
+
+        .header.scrolled .text-swap {
+            font-size: 0.78rem;
+        }
+
+        .header .container-fluid {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-logo {
+            font-family: 'Silkscreen', var(--font-mono);
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: var(--text-white);
+            text-transform: uppercase;
+            line-height: 1;
+            transition: font-size 0.4s ease, transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.4s ease;
+        }
+
+        .header-center {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            cursor: none;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .header-center .menu-text span {
+            font-family: var(--font-mono);
+            font-size: 0.88rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-white);
+        }
+
+        .header-menu-btn {
+            font-size: 1.3rem;
+            color: var(--text-white);
+            transition: color var(--transition);
+            display: flex;
+            align-items: center;
+        }
+
+        .header-center:hover .menu-text span,
+        .header-center:hover .header-menu-btn,
+        .header-center:hover .close-text {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+        }
+
+        .btn-cta {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            background: var(--accent);
+            color: #000;
+            padding: 0 1.4rem;
+            height: 44px;
+            border: none;
+            transition: background var(--transition), height 0.4s ease, font-size 0.4s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-cta:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-plus {
+            font-size: 1.2rem;
+            font-weight: 500;
+            background: var(--accent);
+            color: #000;
+            width: 44px;
+            height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            margin-left: 3px;
+            transition: background var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-plus::before {
+            content: '+';
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-plus::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-hover);
+            transition: left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 0;
+        }
+
+        .btn-plus:hover::after {
+            left: 0;
+        }
+
+        .btn-plus:hover {
+            background: var(--accent);
+        }
+
+        /* ========== HEADER MENU-OPEN STATE ========== */
+        .header-logo,
+        .header-right {
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.4s ease;
+        }
+
+        body.menu-open .header {
+            background: #2b2b2b;
+            backdrop-filter: none;
+        }
+
+        body.menu-open .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent);
+            animation: lineGrow 0.4s ease 0.15s both;
+        }
+
+        @keyframes lineGrow {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
+        }
+
+        body.menu-open .header-logo {
+            transform: translateX(1.5rem);
+        }
+
+        body.menu-open .header-right {
+            transform: translateX(-1.5rem);
+        }
+
+        .header-center .text-swap {
+            font-family: var(--font-mono);
+            font-size: 0.88rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-white);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.65rem;
+            position: relative;
+        }
+
+        .header-center .text-swap .char {
+            display: inline-block;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .header-center .text-swap .char.out {
+            transform: translateY(-120%);
+            opacity: 0;
+        }
+
+        .header-center .text-swap .char.in {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .header-center .text-swap .char.pre-in {
+            transform: translateY(120%);
+            opacity: 0;
+        }
+
+        .header-center .swap-icon {
+            display: inline-flex;
+            align-items: center;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .header-center .swap-icon.out {
+            transform: translateY(-120%);
+            opacity: 0;
+        }
+
+        .header-center .swap-icon.pre-in {
+            transform: translateY(120%);
+            opacity: 0;
+        }
+
+        .header-center .swap-icon.in {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        body.menu-open .header-center .text-swap {
+            border: 1px solid var(--text-gray);
+            padding: 0.4rem 0.85rem;
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+        }
+
+        body.menu-open .header-center .text-swap:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* ========== RECTANGLE TRANSITION ========== */
+        .rect-transition {
+            position: fixed;
+            inset: 0;
+            z-index: 998;
+            pointer-events: none;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+        }
+
+        .rect-transition .rect {
+            background: #2b2b2b;
+            transform: scaleY(0);
+            transform-origin: top;
+        }
+
+        /* ========== FULLSCREEN MENU ========== */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #2b2b2b;
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            overflow: hidden;
+            padding-top: 70px;
+            transition: none;
+        }
+
+        .menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .menu-body {
+            display: flex;
+            height: calc(100vh - 70px);
+            gap: 0;
+            padding: 2.5rem 2.8rem;
+            max-width: 1440px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        /* Col 1 - Navigation */
+        .menu-col-nav {
+            flex: 0 0 30%;
+            padding-right: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .menu-nav-link {
+            display: block;
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 4vw, 3.8rem);
+            font-weight: 400;
+            color: var(--text-gray);
+            padding: 0.25rem 0 0.25rem 2.5rem;
+            transition: color 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .menu-overlay.active .menu-nav-link {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .menu-nav-link:nth-of-type(1) { transition: opacity 0.4s 0.15s, transform 0.4s 0.15s, color 0.3s; }
+        .menu-nav-link:nth-of-type(2) { transition: opacity 0.4s 0.22s, transform 0.4s 0.22s, color 0.3s; }
+        .menu-nav-link:nth-of-type(3) { transition: opacity 0.4s 0.29s, transform 0.4s 0.29s, color 0.3s; }
+        .menu-nav-link:nth-of-type(4) { transition: opacity 0.4s 0.36s, transform 0.4s 0.36s, color 0.3s; }
+        .menu-nav-link:nth-of-type(5) { transition: opacity 0.4s 0.43s, transform 0.4s 0.43s, color 0.3s; }
+
+        .menu-nav-link .nav-bullet {
+            display: none;
+        }
+
+        .menu-col-nav {
+            position: relative;
+        }
+
+        .nav-indicator {
+            position: absolute;
+            left: 0;
+            width: 18px;
+            height: 18px;
+            background: var(--accent);
+            pointer-events: none;
+            transition: top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 5;
+        }
+
+        .menu-nav-link {
+            color: var(--text-gray);
+            transition: color 0.3s ease;
+        }
+
+        .menu-nav-link:hover,
+        .menu-nav-link.active {
+            color: var(--accent);
+        }
+
+        /* Col 2 - Contact Info */
+        .menu-col-info {
+            flex: 0 0 22%;
+            padding-right: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s 0.3s, transform 0.5s 0.3s;
+            overflow-y: auto;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .menu-col-info::-webkit-scrollbar {
+            display: none;
+        }
+
+        .menu-overlay.active .menu-col-info {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .menu-info-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-dark);
+            margin-bottom: 0.8rem;
+        }
+
+        .menu-info-block {
+            margin-bottom: 2rem;
+        }
+
+        .menu-info-block a,
+        .menu-info-block p {
+            font-size: 0.88rem;
+            color: var(--text-white);
+            line-height: 1.7;
+            display: block;
+            transition: color var(--transition);
+        }
+
+        .menu-info-block a:hover {
+            color: var(--accent);
+        }
+
+        .menu-info-block .info-name {
+            color: var(--text-gray);
+            font-size: 0.82rem;
+        }
+
+        .menu-global {
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .menu-status-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-white);
+            margin-bottom: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .menu-status-item .status-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            flex-shrink: 0;
+            margin-top: 3px;
+        }
+
+        /* Col 3 & 4 - Images */
+        .menu-col-images {
+            flex: 1;
+            display: flex;
+            gap: 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s 0.45s, transform 0.5s 0.45s;
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        .menu-overlay.active .menu-col-images {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .menu-image-card {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .menu-image-card .img-placeholder {
+            width: 100%;
+            flex: 1;
+            min-height: 0;
+            background: #3a3a3a;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .menu-image-card .img-placeholder.tall {
+            flex: 1.5;
+        }
+
+        .menu-image-card .img-placeholder.short {
+            flex: 0.7;
+        }
+
+        .menu-image-card .img-placeholder .placeholder-inner {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dark);
+            font-size: 2rem;
+        }
+
+        .img-about {
+            background: linear-gradient(135deg, #4a4a4a, #333, #555) !important;
+        }
+
+        .img-project {
+            background: linear-gradient(135deg, #555, #3a3a3a, #444) !important;
+        }
+
+        .img-project-dark {
+            background: #1a1a1a !important;
+        }
+
+        .menu-image-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-dark);
+        }
+
+        @media (max-width: 1024px) {
+            .menu-body {
+                flex-wrap: wrap;
+                padding: 2.5rem 2rem;
+            }
+
+            .menu-col-nav {
+                flex: 0 0 45%;
+            }
+
+            .menu-col-info {
+                flex: 0 0 55%;
+            }
+
+            .menu-col-images {
+                flex: 0 0 100%;
+                margin-top: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu-body {
+                flex-direction: column;
+                padding: 2rem 1.5rem;
+            }
+
+            .menu-col-nav,
+            .menu-col-info {
+                flex: none;
+                padding-right: 0;
+                margin-bottom: 2rem;
+            }
+
+            .menu-nav-link {
+                font-size: 2.2rem;
+            }
+
+            .menu-col-images {
+                flex-direction: column;
+            }
+        }
+
+        /* ========== HERO ========== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-top: 70px;
+            position: relative;
+            overflow: hidden;
+            background: var(--bg);
+        }
+
+        .hero-inner {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            position: relative;
+            transform-origin: center center;
+            will-change: transform, opacity, border-radius;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            flex: 0 0 56%;
+            max-width: 56%;
+            position: relative;
+            z-index: 2;
+            padding: 0;
+        }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(3.2rem, 5.8vw, 86px);
+            font-weight: 400;
+            line-height: 1.04;
+            letter-spacing: -0.02em;
+            color: #e8e4df;
+            margin-bottom: 2rem;
+        }
+
+        .hero-desc {
+            font-family: var(--font-mono);
+            font-size: 0.84rem;
+            font-weight: 400;
+            color: #777770;
+            line-height: 1.75;
+            max-width: 480px;
+            margin-bottom: 2rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            align-items: center;
+            gap: 1.8rem;
+        }
+
+        .hero-btn-group {
+            display: flex;
+            align-items: stretch;
+        }
+
+        .hero-btn-group .btn-cta {
+            height: 46px;
+            padding: 0 1.5rem;
+            font-size: 0.68rem;
+        }
+
+        .hero-btn-group .btn-plus-left {
+            height: 46px;
+            width: 0;
+            opacity: 0;
+            margin: 0;
+            overflow: hidden;
+            order: -1;
+            transition: width 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        opacity 0.2s ease,
+                        margin 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .hero-btn-group .btn-plus-right {
+            height: 46px;
+            width: 46px;
+            transition: width 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        opacity 0.2s ease,
+                        margin 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .hero-btn-group:hover .btn-plus-right {
+            width: 0;
+            opacity: 0;
+            margin-left: 0;
+        }
+
+        .hero-btn-group:hover .btn-plus-left {
+            width: 46px;
+            opacity: 1;
+            margin-right: 3px;
+        }
+
+        .btn-underline {
+            font-family: var(--font-mono);
+            font-size: 0.84rem;
+            font-weight: 400;
+            color: var(--text-white);
+            text-decoration: underline;
+            text-underline-offset: 5px;
+            text-decoration-thickness: 1px;
+            transition: color var(--transition);
+        }
+
+        .btn-underline:hover {
+            color: var(--accent);
+        }
+
+        /* HERO IMAGE */
+        .hero-ascii {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 55%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .hero-ascii img {
+            display: block;
+            max-height: 100%;
+            object-fit: contain;
+            object-position: center center;
+        }
+
+        /* BRAND BAR */
+        .brand-bar {
+            padding: 0;
+            margin-top: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .brand-bar-text {
+            font-family: var(--font-mono);
+            font-size: 0.58rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #555;
+            max-width: 185px;
+            line-height: 1.6;
+            flex-shrink: 0;
+        }
+
+        .brand-logos {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+        }
+
+        .brand-logo {
+            color: #888;
+            opacity: 0.55;
+            transition: opacity var(--transition);
+            white-space: nowrap;
+        }
+
+        .brand-logo:hover {
+            opacity: 0.9;
+        }
+
+        .brand-coca {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-style: italic;
+            font-size: 1.65rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .brand-body {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .brand-wknd {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .brand-more {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 400;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #555;
+        }
+
+        /* ========== SECTIONS ========== */
+        .section {
+            padding: 7rem 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            color: var(--text-dark);
+            margin-bottom: 1.2rem;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.2rem;
+        }
+
+        .section-desc {
+            font-size: 0.88rem;
+            color: var(--text-gray);
+            line-height: 1.8;
+            max-width: 600px;
+            margin-bottom: 3rem;
+        }
+
+        /* ========== STATS ========== */
+        .stats-section {
+            background: #ececec;
+            color: var(--text-light-bg);
+            position: relative;
+            z-index: 1;
+        }
+
+        .stats-grid {
+            display: flex;
+            gap: 0;
+        }
+
+        .stat-image {
+            flex: 0 0 25%;
+            min-height: 500px;
+            overflow: hidden;
+        }
+
+        .stat-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .stat-card {
+            flex: 1;
+            padding: 2.5rem 2.5rem;
+            border-left: 1px solid #d5d5d5;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 500px;
+            transition: background 0.3s ease;
+        }
+
+        .stat-card:hover {
+            background: #e2e2e2;
+        }
+
+        .stat-number {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            font-weight: 300;
+            letter-spacing: -0.03em;
+            line-height: 1;
+            color: #1a1a1a;
+        }
+
+        .stat-label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #444;
+            line-height: 1.5;
+        }
+
+        .stat-label .stat-char {
+            display: inline-block;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .stat-card:hover .stat-char {
+            color: var(--accent);
+        }
+
+        /* ========== PROCESS ========== */
+        .process-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .process-card {
+            flex: 1;
+            min-width: 260px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+            position: relative;
+        }
+
+        .process-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.5s ease;
+        }
+
+        .process-card:hover::after {
+            width: 100%;
+        }
+
+        .process-card:hover {
+            border-color: #333;
+        }
+
+        .process-num {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--accent);
+            letter-spacing: 0.05em;
+            margin-bottom: 1.2rem;
+        }
+
+        .process-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 500;
+            margin-bottom: 0.8rem;
+        }
+
+        .process-card p {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            line-height: 1.7;
+        }
+
+        /* ========== INCLUDED ========== */
+        .included-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .included-item {
+            flex: 1 1 calc(50% - 0.75rem);
+            min-width: 300px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            display: flex;
+            gap: 1.5rem;
+            transition: all var(--transition);
+        }
+
+        .included-item:hover {
+            border-color: #333;
+            background: var(--bg-card);
+        }
+
+        .included-idx {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .included-item h3 {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 0.6rem;
+        }
+
+        .included-item p {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            line-height: 1.7;
+        }
+
+        /* ========== CTA ========== */
+        .cta-section {
+            text-align: center;
+        }
+
+        .cta-section .section-title {
+            max-width: 600px;
+            margin: 0 auto 1.2rem;
+        }
+
+        .cta-section .section-desc {
+            margin: 0 auto 2.5rem;
+        }
+
+        /* ========== FOOTER ========== */
+        .footer {
+            border-top: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer-ascii-bg {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: none;
+            opacity: 0.04;
+            overflow: hidden;
+        }
+
+        .footer-ascii-bg pre {
+            font-family: var(--font-mono);
+            font-size: 5px;
+            line-height: 1.1;
+            color: var(--text-white);
+            white-space: pre;
+        }
+
+        .footer-main {
+            padding: 6rem 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-grid {
+            display: flex;
+            justify-content: space-between;
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .footer-col h4 {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .footer-col a {
+            display: block;
+            font-size: 0.82rem;
+            color: var(--text-gray);
+            padding: 0.2rem 0;
+            transition: color var(--transition);
+        }
+
+        .footer-col a:hover {
+            color: var(--accent);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .footer-social a {
+            padding: 0;
+            font-size: 1rem;
+            color: var(--text-gray);
+            transition: color var(--transition);
+        }
+
+        .footer-social a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-copy {
+            font-size: 0.7rem;
+            color: var(--text-dark);
+        }
+
+        .footer-tagline {
+            font-size: 0.7rem;
+            color: var(--text-dark);
+            font-style: italic;
+        }
+
+        .footer-legal {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-legal a {
+            font-size: 0.7rem;
+            color: var(--text-dark);
+            transition: color var(--transition);
+        }
+
+        .footer-legal a:hover {
+            color: var(--accent);
+        }
+
+        /* ========== REVEAL ANIMATIONS ========== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-d1 { transition-delay: 0.1s; }
+        .reveal-d2 { transition-delay: 0.2s; }
+        .reveal-d3 { transition-delay: 0.3s; }
+        .reveal-d4 { transition-delay: 0.4s; }
+        .reveal-d5 { transition-delay: 0.5s; }
+        .reveal-d6 { transition-delay: 0.6s; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero h1 { animation: fadeUp 0.9s ease 0.15s both; }
+        .hero-desc { animation: fadeUp 0.9s ease 0.35s both; }
+        .hero-buttons { animation: fadeUp 0.9s ease 0.55s both; }
+        .hero-ascii { animation: fadeUp 1.2s ease 0.3s both; }
+        .brand-bar { animation: fadeUp 0.8s ease 0.7s both; }
+
+        /* ========== SWIPER (reserved) ========== */
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 1200px) {
+            /* removed old ascii ref */
+        }
+
+        @media (max-width: 1024px) {
+            .hero-content {
+                flex: 0 0 58%;
+                max-width: 58%;
+            }
+
+            .hero-ascii {
+                width: 38%;
+            }
+
+            .stats-grid { flex-wrap: wrap; }
+
+            .stat-card {
+                flex: 1 1 calc(50% - 0.75rem);
+                min-width: 220px;
+            }
+
+            .header-right .btn-cta span { display: none; }
+            .header-right .btn-cta::before { content: '≡'; font-size: 1.1rem; }
+            .header-right .btn-cta { padding: 0 0.8rem; }
+        }
+
+        @media (max-width: 768px) {
+            body { cursor: auto; }
+            .cursor-dot, .cursor-ring { display: none; }
+
+            .container { padding: 0 1.5rem; }
+            .container-fluid { padding: 0 1.5rem; }
+
+            .header-center { display: none; }
+
+            .hero { padding-top: 60px; }
+
+            .hero-inner { flex-direction: column; }
+
+            .hero-content {
+                flex: none;
+                max-width: 100%;
+            }
+
+            .hero-ascii {
+                position: relative;
+                width: 100%;
+                height: 350px;
+                right: auto;
+                top: auto;
+                bottom: auto;
+                margin-top: 2rem;
+                justify-content: center;
+            }
+
+            .hero h1 { font-size: 2.5rem; }
+
+            .brand-bar {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .brand-logos { flex-wrap: wrap; gap: 1.5rem; }
+
+            .section { padding: 4rem 0; }
+
+            .stats-grid { flex-direction: column; }
+            .stat-image { min-height: 300px; }
+            .stat-card { min-height: 250px; border-left: none; border-top: 1px solid #d5d5d5; }
+            .process-grid { flex-direction: column; }
+            .included-grid { flex-direction: column; }
+            .included-item { min-width: unset; }
+
+            .footer-grid { flex-direction: column; gap: 2rem; }
+            .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 2rem; }
+            .container { padding: 0 1.2rem; }
+            .container-fluid { padding: 0 1.2rem; }
+            .header-right { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CURSOR -->
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
+    <!-- RECTANGLE TRANSITION -->
+    <div class="rect-transition" id="rectTransition">
+        <div class="rect"></div><div class="rect"></div><div class="rect"></div><div class="rect"></div><div class="rect"></div>
+        <div class="rect"></div><div class="rect"></div><div class="rect"></div><div class="rect"></div><div class="rect"></div>
+        <div class="rect"></div><div class="rect"></div><div class="rect"></div><div class="rect"></div><div class="rect"></div>
+        <div class="rect"></div><div class="rect"></div><div class="rect"></div><div class="rect"></div><div class="rect"></div>
+    </div>
+
+    <!-- FULLSCREEN MENU -->
+    <div class="menu-overlay" id="menuOverlay">
+        <div class="menu-body">
+            <!-- Nav Column -->
+            <div class="menu-col-nav" id="menuColNav">
+                <div class="nav-indicator" id="navIndicator"></div>
+                <a href="#hero" class="menu-nav-link active">Home</a>
+                <a href="#work" class="menu-nav-link">Work</a>
+                <a href="#process" class="menu-nav-link">Pricing</a>
+                <a href="#included" class="menu-nav-link">About</a>
+                <a href="#contact" class="menu-nav-link">Contact</a>
+            </div>
+            <!-- Info Column -->
+            <div class="menu-col-info">
+                <div class="menu-info-block">
+                    <p class="menu-info-label">CONTACT</p>
+                    <a href="mailto:contact@good-fella.com">contact@good-fella.com</a>
+                </div>
+                <div class="menu-info-block">
+                    <p class="info-name">Julian:</p>
+                    <a href="mailto:julian@good-fella.com">julian@good-fella.com</a>
+                </div>
+                <div class="menu-info-block">
+                    <p class="info-name">Adrian:</p>
+                    <a href="mailto:adrian@good-fella.com">adrian@good-fella.com</a>
+                </div>
+                <div class="menu-info-block">
+                    <p>Instagram:<br><a href="#">@good_fella_studio</a></p>
+                    <p>LinkedIn: <a href="#">@good-fella-studio</a></p>
+                    <p>Github: <a href="#">@GoodFellaStudio</a></p>
+                </div>
+                <p class="menu-global">WORKING GLOBALLY</p>
+                <div class="menu-status-item">
+                    <span class="status-dot"></span>
+                    ACCEPTING PROJECTS. JOIN THE WAITLIST.
+                </div>
+                <div class="menu-status-item">
+                    <span class="status-dot"></span>
+                    ONLY 3 SPOTS LEFT
+                </div>
+            </div>
+            <!-- Images Column -->
+            <div class="menu-col-images">
+                <div class="menu-image-card">
+                    <div class="img-placeholder tall img-about">
+                        <div class="placeholder-inner"><i class="fa-solid fa-users" style="font-size:2.5rem;color:#666;"></i></div>
+                    </div>
+                    <span class="menu-image-label">ABOUT THE STUDIO</span>
+                </div>
+                <div class="menu-image-card">
+                    <div class="img-placeholder img-project">
+                        <div class="placeholder-inner"><i class="fa-solid fa-display" style="font-size:2.5rem;color:#666;"></i></div>
+                    </div>
+                    <div class="img-placeholder short img-project-dark">
+                        <div class="placeholder-inner"><i class="fa-solid fa-code" style="font-size:2rem;color:#444;"></i></div>
+                    </div>
+                    <span class="menu-image-label">FEATURED PROJECT</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="header" id="header">
+        <div class="container-fluid">
+            <a href="#" class="header-logo">GOOD</a>
+            <div class="header-center" id="menuBtn" role="button" tabindex="0">
+                <span class="text-swap" id="textSwap">
+                    <span class="swap-letters" id="swapLetters"></span>
+                    <span class="swap-icon" id="swapIcon"><i class="fa-solid fa-bars"></i></span>
+                </span>
+            </div>
+            <div class="header-right hero-btn-group">
+                <a href="#contact" class="btn-plus btn-plus-left"></a>
+                <a href="#contact" class="btn-cta"><span>LET'S WORK TOGETHER</span></a>
+                <a href="#contact" class="btn-plus btn-plus-right"></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero" id="hero">
+        <div class="container-fluid hero-inner">
+            <div class="hero-content">
+                <h1>Your Frontend team.<br>One monthly fee.</h1>
+                <p class="hero-desc">Good Fella is a frontend development studio that works as your dedicated team. One monthly fee, no contracts, and no hourly tracking.</p>
+                <div class="hero-buttons">
+                    <div class="hero-btn-group">
+                        <a href="#contact" class="btn-plus btn-plus-left"></a>
+                        <a href="#process" class="btn-cta">SEE OUR PRICING</a>
+                        <a href="#contact" class="btn-plus btn-plus-right"></a>
+                    </div>
+                    <a href="#work" class="btn-underline">View our work</a>
+                </div>
+                <div class="brand-bar">
+                    <span class="brand-bar-text">WE HAVE WORKED WITH BRANDS THAT CARE ABOUT CRAFT</span>
+                    <div class="brand-logos">
+                        <span class="brand-logo brand-coca">Coca-Cola</span>
+                        <span class="brand-logo brand-body">BODYARMOR</span>
+                        <span class="brand-logo brand-wknd">WKNDHRS<sup>®</sup></span>
+                        <span class="brand-logo brand-more">+ MANY MORE</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-ascii">
+                <img src="https://i.hizliresim.com/26e0eqj.png" alt="ASCII Art">
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats-section" id="stats">
+        <div class="stats-grid">
+            <div class="stat-image reveal">
+                <img src="https://cdn.sanity.io/images/degpnzrx/production/c7863541ce386e0b47397f3f7aec355f0f0368c6-1600x2400.heif?rect=0,134,1600,2133&w=1600&h=2133&q=90&fit=crop&auto=format" alt="Good Fella Studio">
+            </div>
+            <div class="stat-card reveal reveal-d1">
+                <div class="stat-number" data-target="50" data-prefix="$" data-suffix="B+">$0B+</div>
+                <p class="stat-label" data-hover-chars>COMBINED CLIENT MARKET CAP</p>
+            </div>
+            <div class="stat-card reveal reveal-d2">
+                <div class="stat-number" data-target="10" data-suffix="M+">0M+</div>
+                <p class="stat-label" data-hover-chars>PEOPLE REACHED BY OUR WORK</p>
+            </div>
+            <div class="stat-card reveal reveal-d3">
+                <div class="stat-number" data-target="50" data-suffix="+">0+</div>
+                <p class="stat-label" data-hover-chars>PROJECTS SHIPPED</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROCESS -->
+    <section class="section" id="process">
+        <div class="container">
+            <p class="section-label reveal">// Process</p>
+            <h2 class="section-title reveal">How it works</h2>
+            <div class="section-desc reveal"></div>
+            <div class="process-grid">
+                <div class="process-card reveal reveal-d1">
+                    <span class="process-num">01</span>
+                    <h3>Subscribe</h3>
+                    <p>Pick a plan that fits your workload and pay monthly, with no contracts and no minimum commitment. Pause or cancel to the next month whenever you need to.</p>
+                </div>
+                <div class="process-card reveal reveal-d2">
+                    <span class="process-num">02</span>
+                    <h3>Request</h3>
+                    <p>Send your work through Slack, email, or wherever your team already communicates. We tackle one request at a time in the order you set.</p>
+                </div>
+                <div class="process-card reveal reveal-d3">
+                    <span class="process-num">03</span>
+                    <h3>Ship</h3>
+                    <p>You'll receive deliverables every 2-5 business days with unlimited revisions until you're happy.</p>
+                </div>
+                <div class="process-card reveal reveal-d4">
+                    <span class="process-num">04</span>
+                    <h3>Repeat</h3>
+                    <p>Submit your next request and we keep going the same way. Your backlog shrinks and your product gets better, month after month.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHAT'S INCLUDED -->
+    <section class="section" id="included">
+        <div class="container">
+            <p class="section-label reveal">// What's included</p>
+            <h2 class="section-title reveal">Everything frontend.<br>One subscription.</h2>
+            <div class="section-desc reveal"></div>
+            <div class="included-grid">
+                <div class="included-item reveal reveal-d1">
+                    <span class="included-idx">01</span>
+                    <div>
+                        <h3>Frontend Development</h3>
+                        <p>Websites, web apps, landing pages built with clean, maintainable code. Optimized for performance, SEO, and Core Web Vitals from day one.</p>
+                    </div>
+                </div>
+                <div class="included-item reveal reveal-d2">
+                    <span class="included-idx">02</span>
+                    <div>
+                        <h3>Animation + Interaction</h3>
+                        <p>Scroll-triggered animations, page transitions, hover states, micro-interactions. All GPU-accelerated, all buttery smooth at 60fps.</p>
+                    </div>
+                </div>
+                <div class="included-item reveal reveal-d3">
+                    <span class="included-idx">03</span>
+                    <div>
+                        <h3>Design Implementation</h3>
+                        <p>Pixel-perfect builds from Figma, or whatever you use. Responsive down to the last breakpoint, exactly as your designer intended.</p>
+                    </div>
+                </div>
+                <div class="included-item reveal reveal-d4">
+                    <span class="included-idx">04</span>
+                    <div>
+                        <h3>Tech Stack</h3>
+                        <p>React, Next.js, Vue, Nuxt, Webflow, GSAP, Framer Motion, Tailwind. We match the tools to your project.</p>
+                    </div>
+                </div>
+                <div class="included-item reveal reveal-d5">
+                    <span class="included-idx">05</span>
+                    <div>
+                        <h3>Unlimited Revisions</h3>
+                        <p>Iterate until it's right. No revision caps, no extra charges, no awkward scope conversations.</p>
+                    </div>
+                </div>
+                <div class="included-item reveal reveal-d6">
+                    <span class="included-idx">06</span>
+                    <div>
+                        <h3>Direct Access</h3>
+                        <p>We work in your Slack, your Linear, your Notion. You talk to the developers, not an account manager.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section cta-section" id="contact">
+        <div class="container">
+            <p class="section-label reveal">// Let's talk</p>
+            <h2 class="section-title reveal">Ready to get started?</h2>
+            <p class="section-desc reveal">Your next project deserves a frontend that feels as good as it looks. Let's build something people remember.</p>
+            <div class="reveal">
+                <div class="hero-btn-group" style="display: inline-flex;">
+                    <a href="mailto:contact@good-fella.com" class="btn-plus btn-plus-left"></a>
+                    <a href="mailto:contact@good-fella.com" class="btn-cta">LET'S WORK TOGETHER</a>
+                    <a href="mailto:contact@good-fella.com" class="btn-plus btn-plus-right"></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-ascii-bg" id="footerAscii"></div>
+        <div class="footer-main">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-col">
+                        <h4>Navigation</h4>
+                        <a href="#hero">Home</a>
+                        <a href="#work">Work</a>
+                        <a href="#process">Pricing</a>
+                        <a href="#included">About</a>
+                        <a href="#contact">Contact</a>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Contact</h4>
+                        <a href="mailto:contact@good-fella.com">contact@good-fella.com</a>
+                        <a href="mailto:julian@good-fella.com">julian@good-fella.com</a>
+                        <a href="mailto:adrian@good-fella.com">adrian@good-fella.com</a>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Social</h4>
+                        <div class="footer-social">
+                            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                            <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                            <a href="#"><i class="fa-brands fa-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <span class="footer-copy">&copy; 2025 Good Fella Studio GmbH</span>
+                    <span class="footer-tagline">Let the Fellas handle it.</span>
+                    <div class="footer-legal">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Legal Notice</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://unpkg.com/lenis@1/dist/lenis.min.js"></script>
+    <script>
+        /* Canvas renderer removed - using image instead */
+
+        /* ========== CURSOR ========== */
+        const dot = document.getElementById('cursorDot');
+        const ring = document.getElementById('cursorRing');
+        let mx = 0, my = 0, rx = 0, ry = 0;
+
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX;
+            my = e.clientY;
+            dot.style.left = mx + 'px';
+            dot.style.top = my + 'px';
+        });
+
+        (function animRing() {
+            rx += (mx - rx) * 0.12;
+            ry += (my - ry) * 0.12;
+            ring.style.left = rx + 'px';
+            ring.style.top = ry + 'px';
+            requestAnimationFrame(animRing);
+        })();
+
+        document.querySelectorAll('a, button, .work-card, .stat-card, .process-card, .included-item').forEach(el => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+        });
+
+        /* ========== HEADER SCROLL + HERO SHRINK ========== */
+        const heroEl = document.querySelector('.hero');
+        const heroInner = document.querySelector('.hero-inner');
+
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            document.getElementById('header').classList.toggle('scrolled', scrollY > 60);
+
+            // Hero shrink on scroll
+            const heroH = heroEl.offsetHeight;
+            const progress = Math.min(scrollY / (heroH * 0.6), 1);
+            const scale = 1 - progress * 0.08;
+            const radius = progress * 24;
+            const opacity = 1 - progress * 0.3;
+
+            heroInner.style.transform = `scale(${scale})`;
+            heroInner.style.borderRadius = radius + 'px';
+            heroInner.style.opacity = opacity;
+        });
+
+        /* ========== FULLSCREEN MENU ========== */
+        const menuOverlay = document.getElementById('menuOverlay');
+        const menuBtn = document.getElementById('menuBtn');
+        const headerLogo = document.querySelector('.header-logo');
+        const logoOriginal = headerLogo.textContent;
+        const rects = document.querySelectorAll('.rect-transition .rect');
+        let menuOpen = false;
+        let animating = false;
+
+        function animateRects(direction, callback) {
+            animating = true;
+            const total = rects.length;
+            const stagger = 35;
+            const duration = 350;
+
+            rects.forEach((rect, i) => {
+                const col = i % 5;
+                const row = Math.floor(i / 5);
+                const delay = (col + row) * stagger;
+
+                rect.style.transition = 'none';
+                if (direction === 'in') {
+                    rect.style.transformOrigin = 'top';
+                    rect.style.transform = 'scaleY(0)';
+                } else {
+                    rect.style.transformOrigin = 'bottom';
+                    rect.style.transform = 'scaleY(1)';
+                }
+
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        rect.style.transition = `transform ${duration}ms cubic-bezier(0.65, 0, 0.35, 1) ${delay}ms`;
+                        if (direction === 'in') {
+                            rect.style.transform = 'scaleY(1)';
+                        } else {
+                            rect.style.transform = 'scaleY(0)';
+                        }
+                    });
+                });
+            });
+
+            const maxDelay = (4 + 3) * stagger + duration;
+            setTimeout(() => {
+                animating = false;
+                if (callback) callback();
+            }, maxDelay);
+        }
+
+        // Letter swap system
+        const swapLetters = document.getElementById('swapLetters');
+        const swapIcon = document.getElementById('swapIcon');
+        const textSwap = document.getElementById('textSwap');
+        const wordMenu = 'MENU';
+        const wordClose = 'CLOSE';
+        const iconMenu = '<i class="fa-solid fa-bars"></i>';
+        const iconClose = '<i class="fa-solid fa-xmark"></i>';
+        let currentWord = wordMenu;
+
+        function renderWord(word) {
+            swapLetters.innerHTML = '';
+            for (let i = 0; i < word.length; i++) {
+                const span = document.createElement('span');
+                span.className = 'char in';
+                span.textContent = word[i];
+                swapLetters.appendChild(span);
+            }
+        }
+        renderWord(wordMenu);
+
+        function swapText(toWord, toIcon) {
+            const oldChars = swapLetters.querySelectorAll('.char');
+            const maxOld = oldChars.length;
+            const maxNew = toWord.length;
+            const maxLen = Math.max(maxOld, maxNew);
+            const stagger = 45;
+
+            // Animate out old chars
+            oldChars.forEach((ch, i) => {
+                setTimeout(() => {
+                    ch.classList.remove('in');
+                    ch.classList.add('out');
+                }, i * stagger);
+            });
+
+            // Animate out icon
+            setTimeout(() => {
+                swapIcon.classList.remove('in');
+                swapIcon.classList.add('out');
+            }, maxOld * stagger);
+
+            // After old chars are gone, swap in new
+            const swapDelay = maxOld * stagger + 150;
+
+            setTimeout(() => {
+                swapLetters.innerHTML = '';
+                for (let i = 0; i < maxNew; i++) {
+                    const span = document.createElement('span');
+                    span.className = 'char pre-in';
+                    span.textContent = toWord[i];
+                    swapLetters.appendChild(span);
+                }
+
+                swapIcon.innerHTML = toIcon;
+                swapIcon.classList.remove('out');
+                swapIcon.classList.add('pre-in');
+
+                requestAnimationFrame(() => {
+                    const newChars = swapLetters.querySelectorAll('.char');
+                    newChars.forEach((ch, i) => {
+                        setTimeout(() => {
+                            ch.classList.remove('pre-in');
+                            ch.classList.add('in');
+                        }, i * stagger);
+                    });
+
+                    setTimeout(() => {
+                        swapIcon.classList.remove('pre-in');
+                        swapIcon.classList.add('in');
+                    }, maxNew * stagger);
+                });
+
+                currentWord = toWord;
+            }, swapDelay);
+        }
+
+        function openMenu() {
+            if (animating) return;
+            menuOpen = true;
+            document.body.classList.add('menu-open');
+            headerLogo.textContent = 'Fella';
+            swapText(wordClose, iconClose);
+
+            animateRects('in', () => {
+                menuOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+        }
+
+        function closeMenu() {
+            if (animating) return;
+            menuOpen = false;
+            menuOverlay.classList.remove('active');
+            document.body.classList.remove('menu-open');
+            headerLogo.textContent = logoOriginal;
+            swapText(wordMenu, iconMenu);
+
+            rects.forEach(rect => {
+                rect.style.transform = 'scaleY(1)';
+            });
+
+            requestAnimationFrame(() => {
+                animateRects('out', () => {
+                    document.body.style.overflow = '';
+                });
+            });
+        }
+
+        menuBtn.addEventListener('click', () => {
+            if (menuOpen) closeMenu();
+            else openMenu();
+        });
+
+        // Nav indicator
+        const navIndicator = document.getElementById('navIndicator');
+        const navCol = document.getElementById('menuColNav');
+        const navLinks = document.querySelectorAll('.menu-nav-link');
+
+        function moveIndicator(link) {
+            const colRect = navCol.getBoundingClientRect();
+            const linkRect = link.getBoundingClientRect();
+            const top = linkRect.top - colRect.top + (linkRect.height / 2) - 9;
+            navIndicator.style.top = top + 'px';
+        }
+
+        function initIndicator() {
+            const activeLink = navCol.querySelector('.menu-nav-link.active');
+            if (activeLink) {
+                navIndicator.style.transition = 'none';
+                moveIndicator(activeLink);
+                requestAnimationFrame(() => {
+                    navIndicator.style.transition = '';
+                });
+            }
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener('mouseenter', () => {
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                moveIndicator(link);
+            });
+
+            link.addEventListener('click', function() {
+                navLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                if (menuOpen) closeMenu();
+            });
+        });
+
+        navCol.addEventListener('mouseleave', () => {
+            const activeLink = navCol.querySelector('.menu-nav-link.active');
+            if (activeLink) moveIndicator(activeLink);
+        });
+
+        // Re-position indicator when menu opens
+        const origOpen = openMenu;
+        openMenu = function() {
+            origOpen();
+            requestAnimationFrame(() => setTimeout(initIndicator, 50));
+        };
+
+        // ESC key to close
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && menuOpen) closeMenu();
+        });
+
+        /* ========== SCROLL REVEAL ========== */
+        const revealObs = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    revealObs.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
+
+        document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+        /* ========== STAT COUNTER ========== */
+        const counterObs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                const el = entry.target;
+                const target = parseInt(el.dataset.target);
+                const prefix = el.dataset.prefix || '';
+                const suffix = el.dataset.suffix || '';
+                const start = performance.now();
+                const duration = 2000;
+
+                function tick(now) {
+                    const progress = Math.min((now - start) / duration, 1);
+                    const eased = 1 - Math.pow(1 - progress, 3);
+                    el.textContent = prefix + Math.floor(eased * target) + suffix;
+                    if (progress < 1) requestAnimationFrame(tick);
+                    else el.textContent = prefix + target + suffix;
+                }
+
+                requestAnimationFrame(tick);
+                counterObs.unobserve(el);
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.stat-number').forEach(el => counterObs.observe(el));
+
+        /* ========== SWIPER ========== */
+        /* ========== LENIS SMOOTH SCROLL ========== */
+        const lenis = new Lenis({
+            duration: 1.4,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            smoothWheel: true,
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) lenis.scrollTo(target, { offset: 0 });
+            });
+        });
+
+        /* ========== STAT LABEL HOVER CHARS ========== */
+        document.querySelectorAll('[data-hover-chars]').forEach(el => {
+            const text = el.textContent;
+            el.innerHTML = '';
+            for (let i = 0; i < text.length; i++) {
+                const span = document.createElement('span');
+                span.className = 'stat-char';
+                span.textContent = text[i] === ' ' ? '\u00A0' : text[i];
+                el.appendChild(span);
+            }
+
+            const card = el.closest('.stat-card');
+            card.addEventListener('mouseenter', () => {
+                const chars = el.querySelectorAll('.stat-char');
+                chars.forEach((ch, i) => {
+                    ch.style.transition = 'none';
+                    ch.style.transform = 'translateY(8px)';
+                    ch.style.opacity = '0';
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            ch.style.transition = `transform 0.3s ${i * 20}ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ${i * 20}ms ease, color 0.3s ${i * 20}ms ease`;
+                            ch.style.transform = 'translateY(0)';
+                            ch.style.opacity = '1';
+                        });
+                    });
+                });
+            });
+
+            card.addEventListener('mouseleave', () => {
+                const chars = el.querySelectorAll('.stat-char');
+                chars.forEach((ch, i) => {
+                    ch.style.transition = `transform 0.2s ${i * 10}ms ease, opacity 0.2s ${i * 10}ms ease, color 0.2s ease`;
+                    ch.style.transform = 'translateY(-8px)';
+                    ch.style.opacity = '0';
+                    setTimeout(() => {
+                        ch.style.transition = 'none';
+                        ch.style.transform = 'translateY(0)';
+                        ch.style.opacity = '1';
+                        ch.style.color = '';
+                    }, 400);
+                });
+            });
+        });
+
+        /* ========== FOOTER ASCII BG ========== */
+        (function footerAscii() {
+            const el = document.getElementById('footerAscii');
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&';
+            let left = '', right = '';
+            for (let y = 0; y < 60; y++) {
+                for (let x = 0; x < 50; x++) {
+                    left += Math.random() < 0.4 ? chars[Math.floor(Math.random() * chars.length)] : ' ';
+                    right += Math.random() < 0.4 ? chars[Math.floor(Math.random() * chars.length)] : ' ';
+                }
+                left += '\n';
+                right += '\n';
+            }
+            el.innerHTML = '<pre style="text-align:left">' + left + '</pre><pre style="text-align:right">' + right + '</pre>';
+        })();
+    </script>
+</body>
+</html>
